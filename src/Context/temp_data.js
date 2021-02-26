@@ -10,6 +10,7 @@ export const products = {
         thumbnail : 'https://firebasestorage.googleapis.com/v0/b/mobx-shop.appspot.com/o/apple-macbook-pro.jpg?alt=media&token=d2b1cf37-cfe0-4f20-adeb-eaeb472cedaa',
         
     },
+
     {
         id:2,
         product_name : 'Mac Book',

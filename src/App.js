@@ -11,13 +11,22 @@ import { storeContext } from './Context/store_context';
 import { useContext } from 'react'
 import ProductList from './Componenets/ProductList'
 import SearchResults from './Componenets/SearchResults';
+import { createMuiTheme, Paper, ThemeProvider } from '@material-ui/core';
 function App() {
   const { state } = useContext(storeContext)
+  
+
+   const theme = createMuiTheme({
+     palette:{
+       type:state.theme
+     }
+   })
   return (
+    <ThemeProvider theme={theme}>
+    <Paper style={{minHeight:'100vh'}} >
     <Router>
       <div className="App">
         <Header />
-
         <Switch>
           <Route exact path="/">
             <Featured />
@@ -35,33 +44,31 @@ function App() {
             <Checkout />
           </Route>
 
-        
           <Route path="/cart">
             <Cart />
           </Route>
 
-          <Route exact path="/signin">
+          <Route path="/signin">
             <SignIn />
           </Route>
 
-          <Route exact path="/signup">
+          <Route path="/signup">
             <SignUp />
           </Route>
 
-          <Route exact path="/pd/:id">
+          <Route path="/pd/:category/:id">
             <ProductDetailsPage />
           </Route>
           
-          <Route exact path="/search">
+          <Route path="/search">
             <SearchResults/>
           </Route>
 
         </Switch>
-
       </div>
-
-
     </Router>
+    </Paper>
+    </ThemeProvider>
   );
 }
 

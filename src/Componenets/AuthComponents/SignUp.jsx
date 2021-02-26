@@ -1,5 +1,5 @@
-import React,{useState} from 'react'
-import { Box, Grid, makeStyles, TextField, Typography, Button,Snackbar } from '@material-ui/core'
+import React, { useState } from 'react'
+import { Box, Grid, makeStyles, TextField, Typography, Button, Snackbar } from '@material-ui/core'
 import { signUp } from '../../Api Calls/Api'
 import MuiAlert from '@material-ui/lab/Alert';
 import { withFormik } from "formik";
@@ -19,8 +19,11 @@ const useStyle = makeStyles((theme) => (
 
             display: 'flex',
             justifyContent: 'center'
+        },
+        atag: {
+            color: theme.palette.text.primary,
+            textDecoration: 'none'
         }
-
     }
 ))
 
@@ -38,49 +41,46 @@ function SignUpTemplate(props) {
     const classes = useStyle()
     const [open, setOpen] = React.useState(false);
     const [response, setresponse] = useState({
-        status : "success",
-        Text : ''
+        status: "success",
+        Text: ''
     })
 
-    console.log(props);
-
-
-  function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
+    function Alert(props) {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
 
-    setOpen(false);
-  };
-    const submitForm =(e)=>{
-            e.preventDefault()
-            handleSubmit()
-            
-           if( Object.keys(errors).length === 0) { signUp(values).then(res =>{
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
+    const submitForm = (e) => {
+        e.preventDefault()
+        handleSubmit()
+
+        if (Object.keys(errors).length === 0) {
+            signUp(values).then(res => {
                 console.log(res);
-                if(res.status === 201)
-                {
+                if (res.status === 201) {
                     setOpen(true)
                     setresponse({
-                        status:"success",
-                        Text:"Register Successfull please Login :)"
+                        status: "success",
+                        Text: "Register Successfull please Login :)"
                     })
-                    
+
                 }
-                else{
+                else {
                     setOpen(true)
                     setresponse({
-                        status:"error",
-                        Text:res.data
+                        status: "error",
+                        Text: res.data
                     })
                 }
 
                 setSubmitting(false)
-                    handleReset()
+                handleReset()
 
             })
         }
@@ -91,12 +91,11 @@ function SignUpTemplate(props) {
             style={{ minHeight: '60vh' }}
         >
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={response.status}>
-            {response.Text}
-        </Alert>
-      </Snackbar>
+                <Alert onClose={handleClose} severity={response.status}>
+                    {response.Text}
+                </Alert>
+            </Snackbar>
             <Grid container item xs={3} justify="center" >
-
                 <Box p={3} display="flex" justifyContent="center" flexDirection="column">
                     <form noValidate >
                         <Typography align="center" variant="h6" >
@@ -112,11 +111,11 @@ function SignUpTemplate(props) {
                             onBlur={handleBlur}
                             helperText={touched.first_name ? errors.first_name : ""}
                             error={touched.first_name && Boolean(errors.first_name)}
-                    autoFocus
+                            autoFocus
                             required
                         />
 
-                <TextField
+                        <TextField
                             className={classes.textinput}
                             label="Last Name"
                             name="last_name"
@@ -127,12 +126,12 @@ function SignUpTemplate(props) {
                             helperText={touched.last_name ? errors.last_name : ""}
                             error={touched.last_name && Boolean(errors.last_name)}
                             required
-                        />     
+                        />
 
                         <TextField
                             className={classes.textinput}
                             label="Username"
-                          name="username"
+                            name="username"
                             variant="standard"
                             value={values.username}
                             onChange={handleChange}
@@ -140,7 +139,7 @@ function SignUpTemplate(props) {
                             helperText={touched.username ? errors.username : ""}
                             error={touched.username && Boolean(errors.username)}
                             required
-                        />         
+                        />
 
                         <TextField
                             className={classes.textinput}
@@ -153,7 +152,7 @@ function SignUpTemplate(props) {
                             helperText={touched.email ? errors.email : ""}
                             error={touched.email && Boolean(errors.email)}
                             required
-                           
+
                         />
 
                         <TextField
@@ -169,11 +168,11 @@ function SignUpTemplate(props) {
                             error={touched.password && Boolean(errors.password)}
                             required
                         />
-                       
 
-                       
+
+
                         <div className={classes.btn}>
-                        <Button variant="contained" type="submit" color="primary" onClick={submitForm} >
+                            <Button variant="contained" type="submit" color="primary" onClick={submitForm} >
                                 Register
                         </Button>
                         </div>
@@ -184,43 +183,43 @@ function SignUpTemplate(props) {
             </Grid>
         </Grid>
 
-        
+
     )
 }
 
 
 const SignUp = withFormik({
-    
-        mapPropsToValues: ({
-          first_name , last_name , username ,password , email
-        }) => {
-          return {
+
+    mapPropsToValues: ({
+        first_name, last_name, username, password, email
+    }) => {
+        return {
             first_name: first_name || "",
-            last_name:last_name|| "",
-            username : username || "",
-            password : password || "",
-            email : email || ""
+            last_name: last_name || "",
+            username: username || "",
+            password: password || "",
+            email: email || ""
 
-          };
-        },
-      
-        validationSchema: Yup.object().shape({
+        };
+    },
 
-            first_name : Yup.string().required('required field'),
-            last_name : Yup.string().required('required field'),
-            password: Yup.string()
+    validationSchema: Yup.object().shape({
+
+        first_name: Yup.string().required('required field'),
+        last_name: Yup.string().required('required field'),
+        password: Yup.string()
             .min(3, "Password must contain at least 8 characters")
             .required("Enter your password"),
-            username : Yup.string().required('required field'),
-            email : Yup.string().email('not valid').required('required ')
-       
-          
-        }),
-      
-        handleSubmit: (values,{ setSubmitting }) => {
-            
-        }
-      })(SignUpTemplate);
+        username: Yup.string().required('required field'),
+        email: Yup.string().email('not valid').required('required ')
+
+
+    }),
+
+    handleSubmit: (values, { setSubmitting }) => {
+
+    }
+})(SignUpTemplate);
 
 
 export default SignUp

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { BrowserRouter as Router, Route, NavLink, Switch, useRouteMatch, Redirect } from 'react-router-dom'
-
 import Electronics from './ProductCatagory/Electronics'
 import Fashion from './ProductCatagory/Fashion'
 import Music from './ProductCatagory/Music'
@@ -22,10 +21,8 @@ const useStyle = makeStyles((theme) => (
 
 ))
 
-function Home({children}) {
+function Home({ children }) {
     const classes = useStyle()
-   
-    
     return (
         <Router>
 
@@ -33,10 +30,7 @@ function Home({children}) {
                 <NavLink activeClassName={classes.Active} className={classes.atag} to={`/categories/electronics`}>ELECTRONICS</NavLink>
                 <NavLink activeClassName={classes.Active} className={classes.atag} to={`/categories/music`}>MUSIC</NavLink>
                 <NavLink activeClassName={classes.Active} className={classes.atag} to={`/categories/fashion`}>FASHION</NavLink>
-            </Box> 
-
-            
-           
+            </Box>
         </Router>
     )
 }

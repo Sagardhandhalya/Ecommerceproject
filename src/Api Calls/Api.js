@@ -1,7 +1,7 @@
-
 import axios from 'axios'
 
 const login = (data) =>{
+  console.log(data);
    return axios({
         method: 'post',
         url: 'http://127.0.0.1:8000/api/token/',
@@ -10,11 +10,21 @@ const login = (data) =>{
           password: data.password
         }
       })
-}
+  }
 
 
 const fetchProducts = () =>{
   const url = 'http://127.0.0.1:8000/api/product'
+  return axios.get(url).then((res) => { console.log(res); return res.data})
+}
+
+const fetchProductsForADepartment = (cat) =>{
+  const url = `http://127.0.0.1:8000/api/product/?cat=${cat}`
+  return axios.get(url).then((res) => { console.log(res); return res.data})
+}
+
+const featuredProducts = ()=>{
+  const url = `http://127.0.0.1:8000/api/product/?featured="true"`
   return axios.get(url).then((res) => { console.log(res); return res.data})
 }
 
@@ -35,8 +45,8 @@ const signUp = (user) =>{
 } 
 
 const search= (query) =>{
-  const url = `http://127.0.0.1:8000/api/product/?search=${query}`
+  const url = `http://127.0.0.1:8000/api/product/?q=${query}`
   return axios.get(url)
 }
 
-export {fetchProducts , login , signUp ,search}
+export {fetchProducts , login , signUp ,search,fetchProductsForADepartment,featuredProducts}

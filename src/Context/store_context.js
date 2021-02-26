@@ -3,20 +3,25 @@ import { products } from './temp_data'
 
 const initialState = {
 
-    products: [],
+    products: {},
     user: localStorage.getItem('user') || null,
-    cartProducts: []
+    cartProducts: [],
+    theme:'dark'
 }
 
 const reducer = (state, { action, payload }) => {
     console.log(action);
 
     switch (action) {
+
         case 'ADD_TO_CART':
             return { ...state, cartProducts: [...state.cartProducts, payload] }
 
         case 'UPDATE_PRODUCTS':
-            return { ...state, products: payload }
+            const {key , value} = payload
+            const newProducts = state.products;
+             newProducts[key] = value;
+            return { ...state, products: newProducts}
         
         case 'SIGNIN':
             console.log(payload);
@@ -25,10 +30,17 @@ const reducer = (state, { action, payload }) => {
         case 'SIGNOUT':
             return{...state , user:null}
 
+        case 'TOGGLE_THEME':
+            if(state.theme === 'dark')
+            {
+                return {...state , theme : 'light'}
+            }
+
+            return {...state , theme : 'dark'}
+
         default:
             return state;
     }
-
 }
 
 const storeContext = createContext()
@@ -39,9 +51,10 @@ const StoreProvider = ({ children }) => {
 
     const actions = {
         addToCart: (product, qty) => dispatch({ action: 'ADD_TO_CART', payload: { product, qty } }),
-        loadProductsFromServer: (products) => dispatch({ action: 'UPDATE_PRODUCTS', payload: products }),
+        loadProductsFromServer: (key , value) => dispatch({ action: 'UPDATE_PRODUCTS', payload: {key , value} }),
         signIn : (user) => dispatch({action : 'SIGNIN' , payload:user}),
-        signOut : () => dispatch({action : 'SIGNOUT'})
+        signOut : () => dispatch({action : 'SIGNOUT'}),
+        toggleTheme :() => dispatch({action : 'TOGGLE_THEME'})
     }
 
     return (
@@ -58,6 +71,5 @@ const StoreProvider = ({ children }) => {
 }
 
 const useStore = () => useContext(storeContext)
-
 
 export { StoreProvider, storeContext , useStore}

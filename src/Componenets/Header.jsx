@@ -1,6 +1,6 @@
-import React,{useContext, useState} from 'react'
-import { Link, Redirect } from 'react-router-dom'
-import { AppBar, IconButton, makeStyles, Toolbar, fade, Avatar,Menu,MenuItem } from '@material-ui/core'
+import React, { useContext, useState } from 'react'
+import { Link, Redirect, useHistory } from 'react-router-dom'
+import { AppBar, IconButton, makeStyles, Toolbar, fade, Avatar, Menu, MenuItem } from '@material-ui/core'
 import AppsRoundedIcon from '@material-ui/icons/AppsRounded';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
@@ -8,7 +8,7 @@ import Badge from '@material-ui/core/Badge';
 import SearchIcon from '@material-ui/icons/Search';
 import ShoppingCartRoundedIcon from '@material-ui/icons/ShoppingCartRounded';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import {storeContext} from './../Context/store_context'
+import { storeContext } from './../Context/store_context'
 const useStyle = makeStyles((theme) => {
     return {
         root: {
@@ -65,48 +65,55 @@ const useStyle = makeStyles((theme) => {
 })
 function Header() {
     const classes = useStyle()
-    const {state,methods} = useContext(storeContext)
+    const history = useHistory();
+    const { state, methods } = useContext(storeContext)
     const [searchText, setSearchText] = useState('')
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-   const user = localStorage.getItem('user') || state.user
+    const user = localStorage.getItem('user') || state.user
 
-   const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
-  const Logout = () =>{
-methods.signOut()
-handleClose()
-localStorage.removeItem('user')
-localStorage.removeItem('access_token')
-  }
+    const gotoSearchURL = () => {
+        let url = `/search/?q=${searchText}`;
+        history.replace(url)
+    }
 
-  const toggleTheme = () =>{
-      handleClose()
-  }
+    const Logout = () => {
+        methods.signOut()
+        handleClose()
+        localStorage.removeItem('user')
+        localStorage.removeItem('access_token')
+    }
 
-  const search = (e) =>{
-      console.log('hi..');
-      e.preventDefault()
-      return <Redirect to="/"/>
-      
-  }
+    const toggleTheme = () => {
+        handleClose()
+        methods.toggleTheme()
+    }
+
+    const search = (e) => {
+
+        e.preventDefault()
+        gotoSearchURL()
+
+    }
 
     return (
         <div>
-    
+
 
             <AppBar className={classes.root} position="static" color="primary" >
                 <Toolbar>
-                <Link className={classes.atag} to="/">
-                    <IconButton color={classes.btn} color="inherit">
-                        <AppsRoundedIcon />
-                    </IconButton>
+                    <Link className={classes.atag} to="/">
+                        <IconButton color={classes.btn} color="inherit">
+                            <AppsRoundedIcon />
+                        </IconButton>
                     </Link>
 
                 </Toolbar>
@@ -127,15 +134,13 @@ localStorage.removeItem('access_token')
                             inputProps={{ 'aria-label': 'search' }}
                             onChange={(e) => setSearchText(e.target.value)}
                         />
-                </div>
+                    </div>
                 </form>
                 <div />
-                <Link to="/categories/electronics"  className={classes.atag} >
-            
+                <Link to="/categories/electronics" className={classes.atag} >
                     Departments
-                
                 </Link>
-                <div style={{paddingRight:'15px'}}>
+                <div style={{ paddingRight: '15px' }}>
                     <Link to="/cart" className={classes.atag}>
                         <IconButton aria-label="show 17 new notifications" color="inherit">
                             <Badge badgeContent={state.cartProducts.length} color="secondary">
@@ -145,8 +150,8 @@ localStorage.removeItem('access_token')
                         </IconButton>
                     </Link>
 
-            
-        { user ?  <> <IconButton
+
+                    {user ? <> <IconButton
                         edge="end"
                         aria-label="account of current user"
                         aria-haspopup="true"
@@ -154,64 +159,63 @@ localStorage.removeItem('access_token')
                         onClick={handleMenu}
                         color="secondary"
                     >
-                        <Avatar style={{backgroundColor:"red"}} >
-                       <b> {user[0].toUpperCase()}</b>
+                        <Avatar style={{ backgroundColor: "red", color: 'white' }} >
+                            <b> {user[0].toUpperCase()}</b>
                         </Avatar>
                     </IconButton>
 
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={Logout}>Logout</MenuItem>
-                <MenuItem onClick={toggleTheme}>Toggle Theme</MenuItem>
-              </Menu>
-        
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={open}
+                            onClose={handleClose}
+                        >
+                            <MenuItem onClick={Logout}>Logout</MenuItem>
+                            <MenuItem onClick={toggleTheme}>Toggle Theme</MenuItem>
+                        </Menu>
 
-</>
-              
-               : <> <IconButton
-                    aria-label="show more"
-                    aria-haspopup="true"
-                    aria-controls="menu-appbar2"
-                    color="inherit"
-                    onClick={handleMenu}
-                >
-                    <MoreIcon />
-                </IconButton>
-                
-                <Menu
-                id="menu-appbar2"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-               <Link className={classes.atag} to="/signin" > <MenuItem onClick={handleClose}> Login</MenuItem></Link>
-                <MenuItem onClick={toggleTheme}>Toggle Theme</MenuItem>
-              </Menu>
-                
-                </>
-                } 
+
+                    </>
+
+                        : <> <IconButton
+                            aria-label="show more"
+                            aria-haspopup="true"
+                            aria-controls="menu-appbar2"
+                            color="inherit"
+                            onClick={handleMenu}
+                        >
+                            <MoreIcon />
+                        </IconButton>
+
+                            <Menu
+                                id="menu-appbar2"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={open}
+                                onClose={handleClose}
+                            >
+                                <Link className={classes.atag} to="/signin" > <MenuItem onClick={handleClose}> Login</MenuItem></Link>
+                                <MenuItem onClick={toggleTheme}>Toggle Theme  </MenuItem>
+                            </Menu>
+                        </>
+                    }
                 </div>
             </AppBar>
 

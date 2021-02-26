@@ -1,30 +1,39 @@
-import { Search } from '@material-ui/icons'
-import React,{useState , useEffect} from 'react'
+import { CircularProgress, Box } from '@material-ui/core'
+import React, { useState, useEffect } from 'react'
 import ProductTile from './ProductTile'
-import {search} from '../Api Calls/Api'
-function SearchResults() {
+import { search } from '../Api Calls/Api'
+import { useLocation } from 'react-router-dom'
+import Loder from './Loder'
 
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
+function SearchResults() {
+    let query = useQuery().get('q');
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        
-    search("men").then(
+
+        setLoading(true)
+        search(query).then(
             res => {
-                if(res.status === 200)
-                {
+                if (res.status === 200) {
                     setProducts(res.data)
                     setLoading(false)
                 }
             }
         )
-    }, [])
+    }, [query])
 
     return (
         <div>
+            <h3>Search Results ...</h3>
             {
-                loading ? <h1>Lodding ...</h1>
-                : products.map((prod) => <ProductTile key={prod.id} product={prod}/>)
+                loading ? <Loder />
+
+                    : products.length === 0 ? <h1>Nothing Found..</h1> : products.map((prod) => <ProductTile key={prod.id} product={prod} />)
             }
         </div>
     )
